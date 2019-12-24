@@ -1,0 +1,11 @@
+deploy:
+  provider: s3
+  access_key_id: AKIAIDHZ2NKPZI3FBHIA
+  secret_access_key:
+    secure: yJ6dEeklh0JGirKiJQj4BlWzq9TGaQz1rD00aZY+789AmQwt9MTcLaBufNqmoNnvM0r/OL82UzBW82B12EUQssu2qHZKFUmJbhENqDknT6QnA2QmFInrOIy8g9xjtQr5VNmAIzi7R7FDM4XzzWv5KfLXRsUM8olgV32WTHKrTo6DO5oRTG4KfLP6GQh4jzFNLuwSYXDFZdilpyCZxRlxXVmd5yqXg9Ww8dQdnq1q7J13DCJFSJ8ujMgg2KSKEN+pGpwcayMewWYE/zTvyxwpf34YjvCGS+F37t32Q0yoCwkKANHz5yE7K5H6ICZa7m9iap81l9TnCJMSdo0pTJaI3trGnsf/yTPcByF6ncG5XAu9eGj43CsmBjbIzcgT/MekIE4gWsPQLpyD9UgHy9cH0YunAUFDduVcIHq/wP4n6wR8d+Rt/zvEFHjE0f6w8CIz3K/fhW77+dbJKrjV3Sd/XOqUdBZ90PFoWp4cHwB4zWwXrvSpJX74kNU5EHZ3Ca7PU51qOcCglcIxDkbI99VagY0P+DtaunFswla7+bLJS45pC32WeNfZMDycmP7odKvNH5HlYGRgOX6iqISaH/WUZgQMDTpLiutpAUb2eH8TVfYznFnsYqD3vTUfrMGtlgR9cz+T3IHqFPnxpLTTE2H/6tNMd71OuKsy6Jl3D7jc3DY=
+  bucket: ipv8-website
+  local-dir: html
+  upload-dir: "/"
+  acl: public_read
+  on:
+    repo: jonathanjuursema/ipv8.net

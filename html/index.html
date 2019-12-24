@@ -1,0 +1,211 @@
+<html>
+
+<head>
+
+    <title>Your IP</title>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css"
+          integrity="sha384-rtJEYb85SiYWgfpCr0jn174XgJTn4rptSOQsMroFBPQSGLdOC5IbubP6lJ35qoM9" crossorigin="anonymous">
+
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous">
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,700,200' rel='stylesheet' type='text/css'>
+
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+
+    <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <script>
+
+        function get(i) {
+            if (i == 4) {
+                var url = "https://api-test.ipv8.net/ip"
+            } else if (i == 6) {
+                var url = "https://api.v6.ipv8.net/ip"
+            }
+
+            $.ajax({
+                url: url,
+                success: function (r) {
+                    $("#ip" + i).html('IPv' + i + ' Address: <span class="ip">' + r.ip + '</span>').css("opacity", 1);
+                    $("#ipinfo" + i + " .host").html(r.hostname);
+                    $("#host" + i).css("opacity", 1);
+                    get_details(r.ip, i);
+                },
+                error: function (e) {
+                    $("#ip" + i).html("<span class='err'>No IPv" + i + " connectivity...</span>").css("opacity", 1);
+                    $("#ipinfo" + i + " .info").html('<i class="fas fa-exclamation-triangle"></i>').addClass('err');
+                }
+            })
+        }
+
+        function get_details(ip, i) {
+            $.ajax({
+                url: "https://stat.ripe.net/data/prefix-overview/data.json?max_related=50&resource=" + ip,
+                success: function (r) {
+                    var asns = r.data.asns;
+                    var owner = asns[asns.length - 1];
+                    $("#ipinfo" + i + " .as").html(owner.holder + " (ASN: " + owner.asn + ")");
+                    $("#as").css("opacity", 1);
+                }
+            });
+            $.ajax({
+                url: "https://stat.ripe.net/data/maxmind-geo-lite/data.json?max_related=50&resource=" + ip,
+                success: function (r) {
+                    var locations = r.data.located_resources[0].locations;
+                    var geo = locations[locations.length - 1];
+                    $("#ipinfo" + i + " .geo").html(geo != null ? (geo.city == "" ? geo.country : geo.city + ", " + geo.country) : "Not available");
+                    $("#geo").css("opacity", 1);
+                }
+            });
+            $.ajax({
+                url: "https://stat.ripe.net/data/whois/data.json?max_related=50&resource=" + ip,
+                success: function (r) {
+                    var records = r.data.records;
+                    var data = list_to_dict(records[records.length - 1]);
+                    $("#ipinfo" + i + " .netinfo").html(data.descr + " (" + data.netname + ")");
+                }
+            });
+        }
+
+        function list_to_dict(list) {
+            var dict = {};
+            for (i in list) {
+                item = list[i]
+                if (dict.hasOwnProperty(item['key'])) {
+                    dict[item['key']] = dict[item['key']] + " " + item['value']
+                } else {
+                    dict[item['key']] = item['value']
+                }
+            }
+            return dict;
+        }
+
+        $(document).ready(function () {
+
+            get(4);
+            get(6);
+
+        });
+
+    </script>
+
+    <style>
+
+        body {
+            background-color: #333;
+            color: #fff;
+            padding-top: 10%;
+        }
+
+        .ipcontainer {
+            margin-top: 50px;
+
+            text-align: center;
+
+            font-family: "Raleway";
+            font-weight: bold;
+            font-size: 350%;
+        }
+
+        .ipcontainer .ip {
+            font-weight: normal;
+            background-color: #26ADE4;
+            padding: 10px 30px;
+            margin-left: 20px;
+        }
+
+        .err {
+            font-weight: normal;
+            background-color: #FF4B20 !important;
+            padding: 10px 30px;
+        }
+
+        .ipcontainer .info {
+            display: block;
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: normal;
+        }
+
+        .infowrapper {
+            margin-top: 20px;
+            text-align: center;
+            line-height: 40px;
+        }
+
+        .info, .infoname {
+            font-weight: normal;
+            padding: 5px 10px;
+            margin: 0 5px 0 5px;
+        }
+
+        .info {
+            background-color: #26ADE4;
+            margin-left: 0;
+        }
+
+        .infoname {
+            background-color: #FFFFFF;
+            color: #333333;
+            margin-right: 0;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div id="ip4" class="ipcontainer nowrap">
+        <i class="fas fa-spinner fa-spin"></i>
+    </div>
+    <div id="ipinfo4" class="infowrapper">
+        <span id="host4" class="nowrap"><span class='infoname'>HOSTNAME</span><span class='host info'><i
+                class="fas fa-spinner fa-spin"></i></span></span><br>
+        <span id="info4" class="nowrap"><span class='infoname'>NETWORK</span><span class='as info'><i
+                class="fas fa-spinner fa-spin"></i></span></span><br>
+        <span id="geo4" class="nowrap"><span class='infoname'>LOCATION</span><span class='geo info'><i
+                class="fas fa-spinner fa-spin"></i></span></span><br>
+        <span id="netinfo4" class="nowrap"><span class='infoname'>DESCRIPTION</span><span class='netinfo info'><i
+                class="fas fa-spinner fa-spin"></i></span></span>
+    </div>
+
+    <br><br><br>
+
+    <div id="ip6" class="ipcontainer nowrap" style="font-size: 2rem;">
+        <i class="fas fa-spinner fa-spin"></i>
+    </div>
+    <div id="ipinfo6" class="infowrapper">
+        <span id="host6" class="nowrap"><span class='infoname'>HOSTNAME</span><span class='host info'><i
+                class="fas fa-spinner fa-spin"></i></span></span><br>
+        <span id="info6" class="nowrap"><span class='infoname'>NETWORK</span><span class='as info'><i
+                class="fas fa-spinner fa-spin"></i></span></span><br>
+        <span id="geo6" class="nowrap"><span class='infoname'>LOCATION</span><span class='geo info'><i
+                class="fas fa-spinner fa-spin"></i></span></span><br>
+        <span id="netinfo6" class="nowrap"><span class='infoname'>DESCRIPTION</span><span class='netinfo info'><i
+                class="fas fa-spinner fa-spin"></i></span></span>
+    </div>
+
+</div>
+
+</body>
+
+</html>
