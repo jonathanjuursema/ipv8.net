@@ -244,10 +244,10 @@ Resources:
           - ipv8.net
         IPV6Enabled: true
         Origins:
-          - DomainName: !GetAtt S3Bucket.DomainName
+          - DomainName: !Select [1, !Split ['//', !GetAtt S3Bucket.WebsiteURL]]
             Id: ipv8-site
             CustomOriginConfig:
-              OriginProtocolPolicy: https-only
+              OriginProtocolPolicy: http-only
         ViewerCertificate:
           AcmCertificateArn: !Ref AcmCertificate
           SslSupportMethod: sni-only
