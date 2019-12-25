@@ -50,16 +50,9 @@ Resources:
           def handler(event, context):
 
               print(event)
+              source_ip = event['multiValueHeaders']['X-Forwarded-For'][0].split(", ")[0]
+              print(source_ip)
 
-              headers = {}
-              if "headers" in event and "origin" in event["headers"]:
-                  origin = event["headers"]["origin"]
-                  if origin not in allowed_origins:
-                      return False
-                  headers = { "Access-Control-Allow-Origin": origin }
-
-
-              source_ip = event['requestContext']['identity']['sourceIp']
               try:
                   hostname = socket.gethostbyaddr(source_ip)[0]
               except:
@@ -72,7 +65,7 @@ Resources:
 
               return {
                   'statusCode': 200,
-                  'headers': headers,
+                  'headers': { "Access-Control-Allow-Origin": "*" },
                   'body': json.dumps(response)
               }
 
@@ -88,7 +81,9 @@ Resources:
         ZipFile: |
           def handler(event, context):
 
-              source_ip = event['requestContext']['identity']['sourceIp']
+              print(event)
+              source_ip = event['multiValueHeaders']['X-Forwarded-For'][0].split(", ")[0]
+              print(source_ip)
 
               return {
                   'statusCode': 200,
