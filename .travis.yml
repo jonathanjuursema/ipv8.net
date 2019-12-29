@@ -1,6 +1,14 @@
 language: minimal
 
 deploy:
+  - provider: cloudformation
+    edge: true
+    access_key_id: AKIAYHGAO4YHNE6XBI4U
+    secret_access_key: $AWS_SECRET_KEY
+    region: eu-west-1
+    template: application.cfn.yaml
+    stack_name: ipv8-website
+    capabilities: CAPABILITY_NAMED_IAM
   - provider: s3
     access_key_id: AKIAYHGAO4YHNE6XBI4U
     secret_access_key: $AWS_SECRET_KEY
@@ -10,11 +18,3 @@ deploy:
     acl: public_read
     on:
       repo: jonathanjuursema/ipv8.net
-  - provider: cloudformation
-    edge: true
-    access_key_id: AKIAYHGAO4YHNE6XBI4U
-    secret_access_key: $AWS_SECRET_KEY
-    region: eu-west-1
-    template: application.cfn.yaml
-    stack_name: ipv8-website
-    capabilities: CAPABILITY_NAMED_IAM
