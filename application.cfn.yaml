@@ -210,7 +210,7 @@ Resources:
         IPV6Enabled: true
         Origins:
           - DomainName: !Sub "${IPv8Api}.execute-api.${AWS::Region}.amazonaws.com"
-            OriginPath: /stage
+            OriginPath: /prod
             Id: ipv8-api
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
