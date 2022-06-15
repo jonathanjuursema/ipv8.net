@@ -1,0 +1,29 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Route53 for IPv8.net'
+
+Resources:
+
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: api.ipv8.net
+    DeletionPolicy: Delete
+
+  HostedZoneIdParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: "/route53/api.ipv8.net"
+      Type: "String"
+      Value: !Ref HostedZone
+      Description: "Hosted Zone ID for IPv8.net"
+
+  ACMVerifyRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: _67e786793bac93e9d3e803069bf563bb.api.ipv8.net.
+      HostedZoneId: !Ref HostedZone
+      Type: CNAME
+      TTL: 300
+      ResourceRecords:
+        - _315a4a069caee8c20218c4fc72168b2f.bpxxncpwjz.acm-validations.aws.
